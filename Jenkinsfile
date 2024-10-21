@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tiggers {
+        githubPullRequest()
+    }
     stages {
         stage('Stage 1') {
             steps {
