@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    triggers {
-        githubPush()  // 使用 GitHub Webhook 直接觸發
-    }
     stages {
         stage('Stage 1') {
             steps {
