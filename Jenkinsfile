@@ -11,14 +11,5 @@ pipeline {
                 sh 'git clone https://github.com/aaa01452/myApp_test.git'
             }
         }
-        stage('Build Step 2') {
-            when {
-                changeRequest()  // 檢測 Pull Request
-            }
-            steps {
-                echo 'Building pull request...'
-                // 其他構建步驟
-            }
-        }
     }
 }
