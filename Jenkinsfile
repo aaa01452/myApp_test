@@ -9,7 +9,6 @@ pipeline {
         GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')  // Jenkins 內配置的 GitHub Token 憑證
         REPO_OWNER = 'aaa01452'                     // GitHub Repo 所屬人或組織
         REPO_NAME = 'myApp_test'                // GitHub Repo 名稱
-        PR_NUMBER = env.GITHUB_PR_NUMBER                // Pull Request 編號
     }
     stages {
         stage('Check env') {
