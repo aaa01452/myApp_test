@@ -11,14 +11,17 @@ pipeline {
     //     REPO_NAME = 'myApp_test'                // GitHub Repo 名稱
     }
     stages {
-      // stage('Start') {
-      //       steps {
-      //           script {
-      //               // Pipeline 一開始，設置 GitHub commit 狀態為 'pending'
-
-        //           }
-        //       }
-        //   }
+        stage('Install Curl') {
+            steps {
+                script {
+                    // Update package list and install curl
+                    sh '''
+                    sudo apt-get update
+                    sudo apt-get install -y curl
+                    '''
+                }
+            }
+        }
         stage('Check env') {
             steps {
                 sh 'printenv'
