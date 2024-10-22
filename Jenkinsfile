@@ -1,13 +1,13 @@
 def setBuildStatus(String message, String state, String context, String sha) {
     step([
-        $class: "GitHubCommitStatusSetter",
-        reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/aaa01452/myApp_test"],
-        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context],
-        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
-        commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha ],
-        statusBackrefSource: [$class: "ManuallyEnteredBackrefSource", backref: "${BUILD_URL}flowGraphTable/"],
-        statusResultSource: [$class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
-    ]);
+        $class: 'GitHubCommitStatusSetter',
+        reposSource: [$class: 'ManuallyEnteredRepositorySource', url: 'https://github.com/aaa01452/myApp_test'],
+        contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: context],
+        errorHandlers: [[$class: 'ChangingBuildStatusErrorHandler', result: 'UNSTABLE']],
+        commitShaSource: [$class: 'ManuallyEnteredShaSource', sha: sha ],
+        statusBackrefSource: [$class: 'ManuallyEnteredBackrefSource', backref: "${BUILD_URL}flowGraphTable/"],
+        statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: message, state: state]] ]
+    ])
 }
 
 pipeline {
@@ -36,11 +36,11 @@ pipeline {
                 echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
             }
         }
-        stage("Clone Git Repository") {
+        stage('Clone Git Repository') {
             steps {
                 echo 'Ready to Clone'
                 git(
-                    url: "https://github.com/aaa01452/myApp_test",
+                    url: 'https://github.com/aaa01452/myApp_test',
                     branch: env.GITHUB_PR_SOURCE_BRANCH
                 )
             }
@@ -61,18 +61,18 @@ pipeline {
         }
     }
     post {
+        success {
+            echo 'Build & Deployment Successful'
+            setBuildStatus('Complete', 'SUCCESS', jobContext, "${gitCommit}")
+        }
+        failure {
+            echo 'Build or Deployment Failed'
+            setBuildStatus('Complete', 'FAILURE', jobContext, "${gitCommit}")
+        }
         always {
             cleanWs()
             echo 'Pipeline finished'
             echo "Build #${env.BUILD_NUMBER} ended"
-        }
-        success {
-            echo 'Build & Deployment Successful'
-            setBuildStatus("Complete","SUCCESS",jobContext,"${gitCommit}")
-        }
-        failure {
-            echo 'Build or Deployment Failed'
-            setBuildStatus("Complete","FAILURE",jobContext,"${gitCommit}")
         }
     }
 }
