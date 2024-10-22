@@ -1,3 +1,13 @@
+void setBuildStatus(String message, String state) {
+  step([
+      $class: "GitHubCommitStatusSetter",
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/aaa01452/myApp_test"],
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
+}
+
 pipeline {
     agent {
         docker {
@@ -56,44 +66,11 @@ pipeline {
     post {
         success {
             echo 'Build & Deployment Successful'
-            script {
-                def response = httpRequest(
-                    acceptType: 'APPLICATION_JSON',
-                    contentType: 'APPLICATION_JSON',
-                    httpMode: 'POST',
-                    customHeaders: [[name: 'Authorization', value: "token ${env.GITHUB_TOKEN}"]],
-                    url: "https://api.github.com/repos/${env.REPO_OWNER}/${env.REPO_NAME}/statuses/${env.GIT_COMMIT}",
-                    requestBody: """
-                    {
-                        "state": "success",
-                        "description": "Jenkins build succeeded",
-                        "context": "continuous-integration/jenkins"
-                    }
-                    """
-                )
-
-                echo "GitHub API response: ${response}"
-            }
+            setBuildStatus("Build succeeded", "SUCCESS");
         }
         failure {
             echo 'Build or Deployment Failed'
-            script {
-                def response = httpRequest(
-                    acceptType: 'APPLICATION_JSON',
-                    contentType: 'APPLICATION_JSON',
-                    httpMode: 'POST',
-                    customHeaders: [[name: 'Authorization', value: "token ${env.GITHUB_TOKEN}"]],
-                    url: "https://api.github.com/repos/${env.REPO_OWNER}/${env.REPO_NAME}/statuses/${env.GIT_COMMIT}",
-                    requestBody: """
-                    {
-                        "state": "failure",
-                        "description": "Jenkins build failed",
-                        "context": "continuous-integration/jenkins"
-                    }
-                    """
-                )
-                echo "GitHub API response: ${response}"
-            }
+            setBuildStatus("Build failed", "FAILURE");
         }
         always {
             cleanWs()
