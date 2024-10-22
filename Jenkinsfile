@@ -53,10 +53,17 @@ pipeline {
             cleanWs()
             echo 'Pipeline finished'
             echo "Build #${env.BUILD_NUMBER} ended"
+            echo "Build #${env.BUILD_NUMBER} ended"
+            githubPRStatusPublisher(
+                buildMessage: 'Build finished', 
+                statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), 
+                statusVerifier: allowRunOnStatus('SUCCESS'), 
+                unstableAs: 'FAILURE',
+                errorHandler: 'someErrorHandler' // 填入適當的錯誤處理程序
+            )
         }
         success {
             echo 'Build & Deployment Successful'
-            githubPRStatusPublisher statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), statusVerifier: allowRunOnStatus('SUCCESS'), unstableAs: 'FAILURE'
         }
         failure {
             echo 'Build or Deployment Failed'
