@@ -1,14 +1,3 @@
-void setBuildStatus(String message, String state) {
-  step([
-      $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/my-org/my-repo"],
-      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
-      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
-      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
-  ]);
-}
-
-
 pipeline {
     agent {
         docker {
@@ -26,51 +15,51 @@ pipeline {
       //       steps {
       //           script {
       //               // Pipeline 一開始，設置 GitHub commit 狀態為 'pending'
-                    
-      //           }
-      //       }
-      //   }
+
+        //           }
+        //       }
+        //   }
         stage('Check env') {
             steps {
                 sh 'printenv'
             }
-        // }
-        // stage('Install Git') {
-        //     steps {
-        //         echo 'Install Git inside the node container'
-        //         sh '''
-        //             apk update && apk add git
-        //         '''
-        //     }
-        // }
-        // stage('Checkout Code') {
-        //     steps {
-        //         echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
-        //     }
-        // }
-        // stage('Clone Git Repository') {
-        //     steps {
-        //         echo 'Ready to Clone'
-        //         git(
-        //             url: 'https://github.com/aaa01452/myApp_test',
-        //             branch: env.GITHUB_PR_SOURCE_BRANCH
-        //         )
-        //     }
-        // }
-        // stage('Build') {
-        //     steps {
-        //         echo 'Checking Node and Npm version'
-        //         sh '''
-        //             ls -la
-        //             node -v
-        //             npm -v
-        //         '''
-        //         echo 'Installing dependencies and building the project'
-        //         sh '''
-        //             ls -la
-        //         '''
-        //     }
-        // }
+    }
+    // stage('Install Git') {
+    //     steps {
+    //         echo 'Install Git inside the node container'
+    //         sh '''
+    //             apk update && apk add git
+    //         '''
+    //     }
+    // }
+    // stage('Checkout Code') {
+    //     steps {
+    //         echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
+    //     }
+    // }
+    // stage('Clone Git Repository') {
+    //     steps {
+    //         echo 'Ready to Clone'
+    //         git(
+    //             url: 'https://github.com/aaa01452/myApp_test',
+    //             branch: env.GITHUB_PR_SOURCE_BRANCH
+    //         )
+    //     }
+    // }
+    // stage('Build') {
+    //     steps {
+    //         echo 'Checking Node and Npm version'
+    //         sh '''
+    //             ls -la
+    //             node -v
+    //             npm -v
+    //         '''
+    //         echo 'Installing dependencies and building the project'
+    //         sh '''
+    //             ls -la
+    //         '''
+    //     }
+    // }
     }
     // post {
     //     success {
