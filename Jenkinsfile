@@ -56,6 +56,7 @@ pipeline {
         }
         success {
             echo 'Build & Deployment Successful'
+            githubPRStatusPublisher statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), statusVerifier: allowRunOnStatus('SUCCESS'), unstableAs: 'FAILURE'
         }
         failure {
             echo 'Build or Deployment Failed'
