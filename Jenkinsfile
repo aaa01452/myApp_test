@@ -16,8 +16,7 @@ pipeline {
                 script {
                     // Update package list and install curl
                     sh '''
-                    apt-get update
-                    apt-get install -y curl
+                    apk update && add curl
                     '''
                 }
             }
