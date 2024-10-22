@@ -1,9 +1,4 @@
 void setBuildStatus(String message, String state) {
-  def validStates = ["pending", "success", "failure", "error"]
-  if (!validStates.contains(state)) {
-    error "Invalid state: ${state}. Must be one of: ${validStates.join(', ')}"
-  }
-
   step([
       $class: "GitHubCommitStatusSetter",
       reposSource: [class: "ManuallyEnteredRepositorySource", url: "https://github.com/aaa01452/myApp_test"],
@@ -84,7 +79,7 @@ pipeline {
         }
         failure {
             echo 'Build or Deployment Failed'
-            setBuildStatus("Build failed", "FAILURE")
+            setBuildStatus("Build failed", "failure")
         }
         always {
             cleanWs()
