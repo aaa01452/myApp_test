@@ -52,6 +52,7 @@ pipeline {
         always {
             cleanWs()
             echo 'Pipeline finished'
+            echo "Build #${env.BUILD_NUMBER} ended"
         }
         success {
             echo 'Build & Deployment Successful'
