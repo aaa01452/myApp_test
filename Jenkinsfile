@@ -1,3 +1,15 @@
+def setBuildStatus(String message, String state, String context, String sha) {
+    step([
+        $class: "GitHubCommitStatusSetter",
+        reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/aaa01452/myApp_test"],
+        contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context],
+        errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+        commitShaSource: [$class: "ManuallyEnteredShaSource", sha: sha ],
+        statusBackrefSource: [$class: "ManuallyEnteredBackrefSource", backref: "${BUILD_URL}flowGraphTable/"],
+        statusResultSource: [$class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+    ]);
+}
+
 pipeline {
     agent {
         docker {
@@ -53,20 +65,14 @@ pipeline {
             cleanWs()
             echo 'Pipeline finished'
             echo "Build #${env.BUILD_NUMBER} ended"
-            echo "Build #${env.BUILD_NUMBER} ended"
-            githubPRStatusPublisher(
-                buildMessage: 'Build finished', 
-                statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), 
-                statusVerifier: allowRunOnStatus('SUCCESS'), 
-                unstableAs: 'FAILURE',
-                errorHandler: 'someErrorHandler' // 填入適當的錯誤處理程序
-            )
         }
         success {
             echo 'Build & Deployment Successful'
+            setBuildStatus("Complete","SUCCESS",jobContext,"${gitCommit}")
         }
         failure {
             echo 'Build or Deployment Failed'
+            setBuildStatus("Complete","FAILURE",jobContext,"${gitCommit}")
         }
     }
 }
