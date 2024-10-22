@@ -1,10 +1,16 @@
 void setBuildStatus(String message, String state) {
+  def validStates = ["pending", "success", "failure", "error"]
+  if (!validStates.contains(state)) {
+    error "Invalid state: ${state}. Must be one of: ${validStates.join(', ')}"
+  }
+
   step([
       $class: "GitHubCommitStatusSetter",
-      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/aaa01452/myApp_test"],
-      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
-      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
-      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+      reposSource: [class: "ManuallyEnteredRepositorySource", url: "https://github.com/aaa01452/myApp_test"],
+      contextSource: [class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+      errorHandlers: [[class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [class: "ConditionalStatusResultSource", results: [[class: "AnyBuildResult", message: message, state: state]]],
+      statusResultSource: [[class: "ManuallyEnteredCommitStatusSource", message: message, state: state, targetUrl: env.BUILD_URL]]
   ]);
 }
 
@@ -21,6 +27,14 @@ pipeline {
         REPO_NAME = 'myApp_test'                // GitHub Repo 名稱
     }
     stages {
+      stage('Start') {
+            steps {
+                script {
+                    // Pipeline 一開始，設置 GitHub commit 狀態為 'pending'
+                    setBuildStatus('Build started...', 'pending')
+                }
+            }
+        }
         stage('Check env') {
             steps {
                 sh 'printenv'
@@ -66,7 +80,7 @@ pipeline {
     post {
         success {
             echo 'Build & Deployment Successful'
-            setBuildStatus("Build succeeded", "SUCCESS")
+            setBuildStatus('Build succeeded!', 'success')
         }
         failure {
             echo 'Build or Deployment Failed'
