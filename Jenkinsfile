@@ -16,25 +16,25 @@ pipeline {
             reuseNode true
         }
     }
-    environment {
-        GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')  // Jenkins 內配置的 GitHub Token 憑證
-        REPO_OWNER = 'aaa01452'                     // GitHub Repo 所屬人或組織
-        REPO_NAME = 'myApp_test'                // GitHub Repo 名稱
-    }
+    // environment {
+    //     GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')  // Jenkins 內配置的 GitHub Token 憑證
+    //     REPO_OWNER = 'aaa01452'                     // GitHub Repo 所屬人或組織
+    //     REPO_NAME = 'myApp_test'                // GitHub Repo 名稱
+    // }
     stages {
-      stage('Start') {
-            steps {
-                script {
-                    // Pipeline 一開始，設置 GitHub commit 狀態為 'pending'
-                    setBuildStatus('Build started...', 'SUCCESS')
-                }
-            }
-        }
-        stage('Check env') {
-            steps {
-                sh 'printenv'
-            }
-        }
+      // stage('Start') {
+      //       steps {
+      //           script {
+      //               // Pipeline 一開始，設置 GitHub commit 狀態為 'pending'
+                    
+      //           }
+      //       }
+      //   }
+        // stage('Check env') {
+        //     steps {
+        //         sh 'printenv'
+        //     }
+        // }
         stage('Install Git') {
             steps {
                 echo 'Install Git inside the node container'
@@ -72,19 +72,19 @@ pipeline {
         //     }
         // }
     }
-    post {
-        success {
-            echo 'Build & Deployment Successful'
-            setBuildStatus("Build succeeded", "SUCCESS")
-        }
-        failure {
-            echo 'Build or Deployment Failed'
-            setBuildStatus("Build failed", "FAILURE")
-        }
-        always {
-            cleanWs()
-            echo 'Pipeline finished'
-            echo "Build #${env.BUILD_NUMBER} ended"
-        }
-    }
+    // post {
+    //     success {
+    //         echo 'Build & Deployment Successful'
+    //         setBuildStatus("Build succeeded", "SUCCESS")
+    //     }
+    //     failure {
+    //         echo 'Build or Deployment Failed'
+    //         setBuildStatus("Build failed", "FAILURE")
+    //     }
+    //     always {
+    //         cleanWs()
+    //         echo 'Pipeline finished'
+    //         echo "Build #${env.BUILD_NUMBER} ended"
+    //     }
+    // }
 }
