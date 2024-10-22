@@ -26,7 +26,7 @@ pipeline {
             steps {
                 script {
                     // Pipeline 一開始，設置 GitHub commit 狀態為 'pending'
-                    setBuildStatus('Build started...', 'pending')
+                    setBuildStatus('Build started...', 'SUCCESS')
                 }
             }
         }
@@ -43,34 +43,34 @@ pipeline {
                 '''
             }
         }
-        stage('Checkout Code') {
-            steps {
-                echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
-            }
-        }
-        stage('Clone Git Repository') {
-            steps {
-                echo 'Ready to Clone'
-                git(
-                    url: 'https://github.com/aaa01452/myApp_test',
-                    branch: env.GITHUB_PR_SOURCE_BRANCH
-                )
-            }
-        }
-        stage('Build') {
-            steps {
-                echo 'Checking Node and Npm version'
-                sh '''
-                    ls -la
-                    node -v
-                    npm -v
-                '''
-                echo 'Installing dependencies and building the project'
-                sh '''
-                    ls -la
-                '''
-            }
-        }
+        // stage('Checkout Code') {
+        //     steps {
+        //         echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
+        //     }
+        // }
+        // stage('Clone Git Repository') {
+        //     steps {
+        //         echo 'Ready to Clone'
+        //         git(
+        //             url: 'https://github.com/aaa01452/myApp_test',
+        //             branch: env.GITHUB_PR_SOURCE_BRANCH
+        //         )
+        //     }
+        // }
+        // stage('Build') {
+        //     steps {
+        //         echo 'Checking Node and Npm version'
+        //         sh '''
+        //             ls -la
+        //             node -v
+        //             npm -v
+        //         '''
+        //         echo 'Installing dependencies and building the project'
+        //         sh '''
+        //             ls -la
+        //         '''
+        //     }
+        // }
     }
     post {
         success {
