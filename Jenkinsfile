@@ -30,19 +30,19 @@ pipeline {
       //           }
       //       }
       //   }
-        // stage('Check env') {
+        stage('Check env') {
+            steps {
+                sh 'printenv'
+            }
+        // }
+        // stage('Install Git') {
         //     steps {
-        //         sh 'printenv'
+        //         echo 'Install Git inside the node container'
+        //         sh '''
+        //             apk update && apk add git
+        //         '''
         //     }
         // }
-        stage('Install Git') {
-            steps {
-                echo 'Install Git inside the node container'
-                sh '''
-                    apk update && apk add git
-                '''
-            }
-        }
         // stage('Checkout Code') {
         //     steps {
         //         echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
@@ -82,6 +82,7 @@ pipeline {
     //         setBuildStatus("Build failed", "FAILURE")
     //     }
     //     always {
+    //         setBuildStatus("Build succeeded", "SUCCESS");
     //         cleanWs()
     //         echo 'Pipeline finished'
     //         echo "Build #${env.BUILD_NUMBER} ended"
