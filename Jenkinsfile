@@ -1,15 +1,3 @@
-void setBuildStatus(String message, String context, String state) {
-    withCredentials([string(credentialsId: 'fe648b98-7b73-4e5a-85d1-2a71ad0487bb', variable: 'TOKEN')]) {
-        sh """
-            set -x
-            curl \"https://api.github.com/repos/org/repo/statuses/$GIT_COMMIT?access_token=$TOKEN\" \
-                -H \"Content-Type: application/json\" \
-                -X POST \
-                -d \"{\\\"description\\\": \\\"$message\\\", \\\"state\\\": \\\"$state\\\", \\\"context\\\": \\\"$context\\\", \\\"target_url\\\": \\\"$BUILD_URL\\\"}\"
-        """
-    } 
-}
-
 pipeline {
     agent {
         docker {
@@ -68,11 +56,9 @@ pipeline {
         }
         success {
             echo 'Build & Deployment Successful'
-            setBuildStatus('Build & Deployment Successful', 'Jenkins', 'success')
         }
         failure {
             echo 'Build or Deployment Failed'
-            setBuildStatus('Build or Deployment Failed', 'Jenkins', 'failure')
         }
     }
 }
