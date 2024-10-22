@@ -16,8 +16,8 @@ pipeline {
                 script {
                     // Update package list and install curl
                     sh '''
-                    sudo apt-get update
-                    sudo apt-get install -y curl
+                    apt-get update
+                    apt-get install -y curl
                     '''
                 }
             }
