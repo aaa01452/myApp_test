@@ -1,13 +1,13 @@
 void setBuildStatus(String message, String state) {
   step([
       $class: "GitHubCommitStatusSetter",
-      reposSource: [class: "ManuallyEnteredRepositorySource", url: "https://github.com/aaa01452/myApp_test"],
-      contextSource: [class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
-      errorHandlers: [[class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
-      statusResultSource: [class: "ConditionalStatusResultSource", results: [[class: "AnyBuildResult", message: message, state: state]]],
-      statusResultSource: [[class: "ManuallyEnteredCommitStatusSource", message: message, state: state, targetUrl: env.BUILD_URL]]
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/my-org/my-repo"],
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
   ]);
 }
+
 
 pipeline {
     agent {
@@ -75,11 +75,11 @@ pipeline {
     post {
         success {
             echo 'Build & Deployment Successful'
-            setBuildStatus('Build succeeded!', 'success')
+            setBuildStatus("Build succeeded", "SUCCESS")
         }
         failure {
             echo 'Build or Deployment Failed'
-            setBuildStatus("Build failed", "failure")
+            setBuildStatus("Build failed", "FAILURE")
         }
         always {
             cleanWs()
