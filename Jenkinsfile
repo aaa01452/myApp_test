@@ -66,11 +66,13 @@ pipeline {
     post {
         success {
             echo 'Build & Deployment Successful'
-            setBuildStatus("Build succeeded", "SUCCESS");
+            GitHub PR: set PR status to "success"
+            Build #${BUILD_NUMBER} ended
         }
         failure {
             echo 'Build or Deployment Failed'
-            setBuildStatus("Build failed", "FAILURE");
+            GitHub PR: set PR status to "failure"
+            Build #${BUILD_NUMBER} ended
         }
         always {
             cleanWs()
