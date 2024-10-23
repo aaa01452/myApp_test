@@ -5,6 +5,9 @@ pipeline {
             reuseNode true
         }
     }
+    triggers {
+        githubPullRequests events: [Open(), commitChanged()], preStatus: true, spec: '', triggerMode: 'HEAVY_HOOKS'
+    }
     environment {
         GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')  // Jenkins 內配置的 GitHub Token 憑證
     //     REPO_OWNER = 'aaa01452'                     // GitHub Repo 所屬人或組織
