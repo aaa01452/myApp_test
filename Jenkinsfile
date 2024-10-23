@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Set giuthub status') {
             steps {
-                setGitHubPullRequestStatus githubPRMessage('${GITHUB_PR_COND_REF} run started')
+                setGitHubPullRequestStatus githubPRMessage("${GITHUB_PR_COND_REF} run started")
             }
         }
         stage('Install Curl') {
@@ -87,7 +87,7 @@ pipeline {
     //         setBuildStatus("Build failed", "FAILURE")
     //     }
         always {
-            setGitHubPullRequestStatus("content", "message", "SUCCESS")
+            setGitHubPullRequestStatus githubPRMessage("Build #${BUILD_NUMBER} ended")
             cleanWs()
             echo 'Pipeline finished'
             echo "Build #${env.BUILD_NUMBER} ended"
