@@ -14,6 +14,11 @@ pipeline {
     //     REPO_NAME = 'myApp_test'                // GitHub Repo 名稱
     }
     stages {
+        stage('Set giuthub status') {
+            steps {
+                gitHubPRStatus githubPRMessage('${GITHUB_PR_COND_REF} run started')
+            }
+        }
         stage('Install Curl') {
             steps {
                 script {
@@ -28,7 +33,7 @@ pipeline {
             steps {
                 sh 'printenv'
             }
-    }
+        }
     stage('Call github api') {
         steps {
             echo 'Call github api'
@@ -72,7 +77,7 @@ pipeline {
     //     }
     // }
     }
-    // post {
+    post {
     //     success {
     //         echo 'Build & Deployment Successful'
     //         setBuildStatus("Build succeeded", "SUCCESS")
@@ -81,11 +86,11 @@ pipeline {
     //         echo 'Build or Deployment Failed'
     //         setBuildStatus("Build failed", "FAILURE")
     //     }
-    //     always {
-    //         setBuildStatus("Build succeeded", "SUCCESS");
-    //         cleanWs()
-    //         echo 'Pipeline finished'
-    //         echo "Build #${env.BUILD_NUMBER} ended"
-    //     }
-    // }
+        always {
+            githubPRStatusPublisher buildMessage: message(failureMsg: githubPRMessage('Can\'t set status; build failed.'), successMsg: githubPRMessage('Can\'t set status; build succeeded.')), statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), unstableAs: 'FAILURE'
+            cleanWs()
+            echo 'Pipeline finished'
+            echo "Build #${env.BUILD_NUMBER} ended"
+        }
+    }
 }
