@@ -17,7 +17,7 @@ pipeline {
         stage('Set giuthub status') {
             steps {
                 echo 'Set giuthub status'
-                setGitHubPullRequestStatus context: 'continuous-integration/jenkins', description: 'The build is in progress', state: 'PENDING'
+                setGitHubPullRequestStatus(context: 'continuous-integration/jenkins', description: 'The build is in progress', state: 'PENDING')
             }
         }
         stage('Install Curl') {
@@ -29,7 +29,7 @@ pipeline {
                     apk update && apk add curl
                     '''
                 }
-                setGitHubPullRequestStatus context: 'continuous-integration/jenkins', description: 'Install Curl', state: 'PENDING'
+                setGitHubPullRequestStatus(context: 'continuous-integration/jenkins', description: 'Install Curl', state: 'PENDING')
             }
         }
         stage('Check env') {
@@ -83,14 +83,14 @@ pipeline {
     post {
         success {
             echo 'Build & Deployment Successful'
-            setGitHubPullRequestStatus context: 'Robot', message: 'Jenkins Success', state: 'SUCCESS'
+            setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Success', state: 'SUCCESS')
         }
         failure {
             echo 'Build or Deployment Failed'
-            setGitHubPullRequestStatus context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE'
+            setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE')
         }
         always {
-            setGitHubPullRequestStatus context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE'
+            // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE')
             cleanWs()
             echo 'Pipeline finished'
             echo "Build #${env.BUILD_NUMBER} ended"
