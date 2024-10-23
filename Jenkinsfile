@@ -6,7 +6,7 @@ pipeline {
         }
     }
     triggers {
-        githubPullRequests events: [Open(), commitChanged()], preStatus: true, spec: '', triggerMode: 'HEAVY_HOOKS'
+        githubPullRequests events: [Open(), commitChanged()], spec: '', triggerMode: 'HEAVY_HOOKS'
     }
     environment {
         GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')  // Jenkins 內配置的 GitHub Token 憑證
@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Set giuthub status') {
             steps {
-                gitHubPRStatus githubPRMessage('${GITHUB_PR_COND_REF} run started')
+                setGitHubPullRequestStatus githubPRMessage('${GITHUB_PR_COND_REF} run started')
             }
         }
         stage('Install Curl') {
@@ -87,7 +87,7 @@ pipeline {
     //         setBuildStatus("Build failed", "FAILURE")
     //     }
         always {
-            githubPRStatusPublisher buildMessage: message(failureMsg: githubPRMessage('Can\'t set status; build failed.'), successMsg: githubPRMessage('Can\'t set status; build succeeded.')), statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), unstableAs: 'FAILURE'
+            setGitHubPullRequestStatus("content", "message", "SUCCESS")
             cleanWs()
             echo 'Pipeline finished'
             echo "Build #${env.BUILD_NUMBER} ended"
