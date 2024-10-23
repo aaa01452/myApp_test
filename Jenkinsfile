@@ -17,7 +17,7 @@ pipeline {
         stage('Set giuthub status') {
             steps {
                 echo 'Set giuthub status'
-                setGitHubPullRequestStatus(context: 'continuous-integration/jenkins', message: 'The build is in progress', state: 'PENDING')
+                setGitHubPullRequestStatus(context: 'Robot', message: 'The build is in progress', state: 'PENDING')
             }
         }
         stage('Install Curl') {
@@ -29,7 +29,7 @@ pipeline {
                     apk update && apk add curl
                     '''
                 }
-                setGitHubPullRequestStatus(context: 'continuous-integration/jenkins', message: 'Install Curl', state: 'PENDING')
+                setGitHubPullRequestStatus(context: 'Robot', message: 'Install Curl', state: 'PENDING')
             }
         }
         stage('Check env') {
@@ -37,20 +37,6 @@ pipeline {
                 sh 'printenv'
             }
         }
-    stage('Call github api') {
-        steps {
-            echo 'Call github api'
-            sh '''
-                curl -L \
-                -X POST \
-                -H "Accept: application/vnd.github+json" \
-                -H "Authorization: Bearer $GITHUB_TOKEN" \
-                -H "X-GitHub-Api-Version: 2022-11-28" \
-                https://api.github.com/repos/aaa01452/myApp_test/statuses/$GIT_COMMIT \
-                -d '{"state":"success","target_url":"","description":"The build succeeded!","context":"continuous-integration/jenkins"}'
-            '''
-        }
-    }
     // stage('Checkout Code') {
     //     steps {
     //         echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
