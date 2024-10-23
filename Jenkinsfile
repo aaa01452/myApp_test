@@ -16,17 +16,20 @@ pipeline {
     stages {
         stage('Set giuthub status') {
             steps {
-                setGitHubPullRequestStatus githubPRMessage("${GITHUB_PR_COND_REF} run started")
+                echo 'Set giuthub status'
+                setGitHubPullRequestStatus context: 'continuous-integration/jenkins', description: 'The build is in progress', state: 'PENDING'
             }
         }
         stage('Install Curl') {
             steps {
+                echo 'Install Curl'
                 script {
                     // Update package list and install curl
                     sh '''
                     apk update && apk add curl
                     '''
                 }
+                setGitHubPullRequestStatus context: 'continuous-integration/jenkins', description: 'Install Curl', state: 'PENDING'
             }
         }
         stage('Check env') {
@@ -78,14 +81,14 @@ pipeline {
     // }
     }
     post {
-    //     success {
-    //         echo 'Build & Deployment Successful'
-    //         setBuildStatus("Build succeeded", "SUCCESS")
-    //     }
-    //     failure {
-    //         echo 'Build or Deployment Failed'
-    //         setBuildStatus("Build failed", "FAILURE")
-    //     }
+        success {
+            echo 'Build & Deployment Successful'
+            setGitHubPullRequestStatus context: 'Robot', message: 'Jenkins Success', state: 'SUCCESS'
+        }
+        failure {
+            echo 'Build or Deployment Failed'
+            setGitHubPullRequestStatus context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE'
+        }
         always {
             setGitHubPullRequestStatus githubPRMessage("Build #${BUILD_NUMBER} ended")
             cleanWs()
