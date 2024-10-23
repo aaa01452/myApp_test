@@ -90,7 +90,7 @@ pipeline {
             setGitHubPullRequestStatus context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE'
         }
         always {
-            setGitHubPullRequestStatus githubPRMessage("Build #${BUILD_NUMBER} ended")
+            setGitHubPullRequestStatus context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE'
             cleanWs()
             echo 'Pipeline finished'
             echo "Build #${env.BUILD_NUMBER} ended"
