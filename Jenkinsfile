@@ -17,7 +17,7 @@ pipeline {
         stage('Set giuthub status') {
             steps {
                 echo 'Set giuthub status'
-                setGitHubPullRequestStatus(context: 'continuous-integration/jenkins', description: 'The build is in progress', state: 'PENDING')
+                setGitHubPullRequestStatus(context: 'continuous-integration/jenkins', message: 'The build is in progress', state: 'PENDING')
             }
         }
         stage('Install Curl') {
@@ -29,7 +29,7 @@ pipeline {
                     apk update && apk add curl
                     '''
                 }
-                setGitHubPullRequestStatus(context: 'continuous-integration/jenkins', description: 'Install Curl', state: 'PENDING')
+                setGitHubPullRequestStatus(context: 'continuous-integration/jenkins', message: 'Install Curl', state: 'PENDING')
             }
         }
         stage('Check env') {
