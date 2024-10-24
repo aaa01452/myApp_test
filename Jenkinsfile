@@ -59,6 +59,15 @@ pipeline {
                 }
             }
         }
+        stage('Build Nginx Docker Image') {
+            steps {
+                script {
+                    // 拉取 Nginx 官方镜像并打标签
+                    sh "docker pull nginx:latest"
+                    sh "docker tag nginx:latest ghcr.io/ethan-omniway/nginx:latest"
+                }
+            }
+        }
         stage('Image Build') {
             steps {
                 script {
