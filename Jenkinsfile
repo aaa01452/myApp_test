@@ -27,21 +27,6 @@ pipeline {
                 }
             }
         }
-        stage('Install Docker') {
-            steps {
-                echo 'Install Docker'
-                script {
-                    setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'PENDING')
-                    sh '''
-                        apk add docker openrc
-                        rc-update add docker boot
-                        service docker start
-                        docker version
-                    '''
-                    setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'SUCCESS')
-                }
-            }
-        }
         stage('Checkout Code') {
             steps {
                 echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
@@ -71,13 +56,20 @@ pipeline {
                     sh '''
                         ls -la
                     '''
-                    setGitHubPullRequestStatus(context: 'Build', message: 'Build image', state: 'PENDING')
+                }
+            }
+        }
+        stage('Image Build') {
+            steps {
+                script {
+                    echo 'Image Build'
+                    setGitHubPullRequestStatus(context: 'Image Build', message: 'Build image', state: 'PENDING')
                     echo 'npm run build image'
                     sh '''
                         docker build  --no-cache -t myApp_test:latest .
                         docker image ls
                     '''
-                    setGitHubPullRequestStatus(context: 'Build', message: 'Build image', state: 'SUCCESS')
+                    setGitHubPullRequestStatus(context: 'Image Build', message: 'Build image', state: 'SUCCESS')
                 }
             }
         }
