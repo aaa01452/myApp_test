@@ -1,9 +1,10 @@
 pipeline {
     agent {
-        docker {
-            image 'node:18-alpine'
-            reuseNode true
-        }
+        dockerfile true
+        // docker {
+        //     image 'node:18-alpine'
+        //     reuseNode true
+        // }
     }
     triggers {
         githubPullRequests events: [Open(), commitChanged()], spec: '', triggerMode: 'HEAVY_HOOKS'
