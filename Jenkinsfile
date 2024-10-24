@@ -33,7 +33,6 @@ pipeline {
                 script {
                     setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'PENDING')
                     sh '''
-                        apk add docker
                         docker version
                     '''
                     setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'SUCCESS')
