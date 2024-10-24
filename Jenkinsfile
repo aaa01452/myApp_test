@@ -31,17 +31,12 @@ pipeline {
             steps {
                 echo 'Install Docker'
                 script {
-                    try {
-                        setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'PENDING')
-                        sh '''
-                            apk add docker
-                            docker version
-                        '''
-                        setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'SUCCESS')
-                    } catch (e) { // Corrected to catch(e)
-                        echo "Caught: ${e}" // Corrected to use e
-                        setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'ERROR')
-                    }
+                    setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'PENDING')
+                    sh '''
+                        apk add docker
+                        docker version
+                    '''
+                    setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'SUCCESS')
                 }
             }
         }
@@ -62,30 +57,25 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    try {
-                        setGitHubPullRequestStatus(context: 'Build', message: 'Check version', state: 'PENDING')
-                        echo 'Checking Node and Npm version'
-                        sh '''
-                            ls -la
-                            node -v
-                            npm -v
-                        '''
-                        setGitHubPullRequestStatus(context: 'Build', message: 'Check version', state: 'SUCCESS')
-                        echo 'Installing dependencies and building the project'
-                        sh '''
-                            ls -la
-                        '''
-                        setGitHubPullRequestStatus(context: 'Build', message: 'Build image', state: 'PENDING')
-                        echo 'npm run build image'
-                        sh '''
-                            docker build  --no-cache -t myApp_test:latest .
-                            docker image ls
-                        '''
-                        setGitHubPullRequestStatus(context: 'Build', message: 'Build image', state: 'SUCCESS')
-                    } catch (e) { // Corrected to catch(e)
-                        echo "Caught: ${e}" // Corrected to use e
-                        setGitHubPullRequestStatus(context: 'Build', message: 'build error', state: 'ERROR')
-                    }
+                    setGitHubPullRequestStatus(context: 'Build', message: 'Check version', state: 'PENDING')
+                    echo 'Checking Node and Npm version'
+                    sh '''
+                        ls -la
+                        node -v
+                        npm -v
+                    '''
+                    setGitHubPullRequestStatus(context: 'Build', message: 'Check version', state: 'SUCCESS')
+                    echo 'Installing dependencies and building the project'
+                    sh '''
+                        ls -la
+                    '''
+                    setGitHubPullRequestStatus(context: 'Build', message: 'Build image', state: 'PENDING')
+                    echo 'npm run build image'
+                    sh '''
+                        docker build  --no-cache -t myApp_test:latest .
+                        docker image ls
+                    '''
+                    setGitHubPullRequestStatus(context: 'Build', message: 'Build image', state: 'SUCCESS')
                 }
             }
         }
