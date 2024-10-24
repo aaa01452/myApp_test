@@ -59,17 +59,6 @@ pipeline {
                 }
             }
         }
-        stage('Install Docker') {
-            steps {
-                echo 'Install Docker'
-                script {
-                    sh '''
-                        cd ~/usr/bin/docker
-                        ls -la
-                    '''
-                }
-            }
-        }
         stage('Image Build') {
             steps {
                 script {
