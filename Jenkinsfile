@@ -64,7 +64,8 @@ pipeline {
                 echo 'Install Docker'
                 script {
                     sh '''
-                        apk add docker
+                        cd ~/usr/bin/docker
+                        ls -la
                     '''
                 }
             }
