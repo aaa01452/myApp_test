@@ -17,7 +17,6 @@ pipeline {
         stage('Set giuthub status') {
             steps {
                 echo 'Set giuthub status'
-                setGitHubPullRequestStatus(context: 'Robot', message: 'The build is in progress', state: 'PENDING')
             }
         }
         stage('Install Curl') {
@@ -29,54 +28,56 @@ pipeline {
                     apk update && apk add curl
                     '''
                 }
-                setGitHubPullRequestStatus(context: 'Robot', message: 'Install Curl', state: 'PENDING')
             }
         }
-        stage('Check env') {
+        stage('Checkout Code') {
             steps {
-                sh 'printenv'
+                echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
             }
         }
-    // stage('Checkout Code') {
-    //     steps {
-    //         echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
-    //     }
-    // }
-    // stage('Clone Git Repository') {
-    //     steps {
-    //         echo 'Ready to Clone'
-    //         git(
-    //             url: 'https://github.com/aaa01452/myApp_test',
-    //             branch: env.GITHUB_PR_SOURCE_BRANCH
-    //         )
-    //     }
-    // }
-    // stage('Build') {
-    //     steps {
-    //         echo 'Checking Node and Npm version'
-    //         sh '''
-    //             ls -la
-    //             node -v
-    //             npm -v
-    //         '''
-    //         echo 'Installing dependencies and building the project'
-    //         sh '''
-    //             ls -la
-    //         '''
-    //     }
-    // }
+        stage('Clone Git Repository') {
+            steps {
+                echo 'Ready to Clone'
+                git(
+                url: 'https://github.com/aaa01452/myApp_test',
+                branch: env.GITHUB_PR_SOURCE_BRANCH
+            )
+            }
+        }
+        stage('Build') {
+            steps {
+                setGitHubPullRequestStatus(context: 'Robot1', message: 'Check version', state: 'PENDING')
+                echo 'Checking Node and Npm version'
+                sh '''
+                    ls -la
+                    node -v
+                    npm -v
+                '''
+                setGitHubPullRequestStatus(context: 'Robot1', message: 'Check version', state: 'SUCCESS')
+                echo 'Installing dependencies and building the project'
+                sh '''
+                    ls -la
+                '''
+                setGitHubPullRequestStatus(context: 'Robot', message: 'Build image', state: 'PENDING')
+                echo 'npm run build image'
+                sh '''
+                   docker build  --no-cache -t myApp_test:latest .
+                   docker image ls
+                '''
+                setGitHubPullRequestStatus(context: 'Robot', message: 'Build image', state: 'SUCCESS')
+            }
+        }
     }
     post {
         success {
             echo 'Build & Deployment Successful'
-            setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Success', state: 'SUCCESS')
+            // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Success', state: 'SUCCESS')
         }
         failure {
             echo 'Build or Deployment Failed'
-            setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE')
+            // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE')
         }
         always {
-            // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE')
             cleanWs()
             echo 'Pipeline finished'
             echo "Build #${env.BUILD_NUMBER} ended"
