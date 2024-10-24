@@ -9,9 +9,7 @@ pipeline {
         githubPullRequests events: [Open(), commitChanged()], spec: '', triggerMode: 'HEAVY_HOOKS'
     }
     environment {
-        GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')  // Jenkins 內配置的 GitHub Token 憑證
-    //     REPO_OWNER = 'aaa01452'                     // GitHub Repo 所屬人或組織
-    //     REPO_NAME = 'myApp_test'                // GitHub Repo 名稱
+        GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')
     }
     stages {
         stage('Set giuthub status') {
@@ -25,8 +23,26 @@ pipeline {
                 script {
                     // Update package list and install curl
                     sh '''
-                    apk update && apk add curl
+                        apk update && apk add curl
                     '''
+                }
+            }
+        }
+        stage('Install Docker') {
+            steps {
+                echo 'Install Docker'
+                script {
+                    try {
+                        setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'PENDING')
+                        sh '''
+                        apk add docker
+                        docker version
+                    '''
+                        setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'SUCCESS')
+                    } catch (e) {
+                        echo "Caught: ${err}"
+                        setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'ERROR')
+                    }
                 }
             }
         }
@@ -46,36 +62,42 @@ pipeline {
         }
         stage('Build') {
             steps {
-                setGitHubPullRequestStatus(context: 'Robot1', message: 'Check version', state: 'PENDING')
-                echo 'Checking Node and Npm version'
-                sh '''
-                    ls -la
-                    node -v
-                    npm -v
-                '''
-                setGitHubPullRequestStatus(context: 'Robot1', message: 'Check version', state: 'SUCCESS')
-                echo 'Installing dependencies and building the project'
-                sh '''
-                    ls -la
-                '''
-                setGitHubPullRequestStatus(context: 'Robot', message: 'Build image', state: 'PENDING')
-                echo 'npm run build image'
-                sh '''
-                   docker build  --no-cache -t myApp_test:latest .
-                   docker image ls
-                '''
-                setGitHubPullRequestStatus(context: 'Robot', message: 'Build image', state: 'SUCCESS')
+                try {
+                    setGitHubPullRequestStatus(context: 'Build', message: 'Check version', state: 'PENDING')
+                    echo 'Checking Node and Npm version'
+                    sh '''
+                        ls -la
+                        node -v
+                        npm -v
+                    '''
+                    setGitHubPullRequestStatus(context: 'Build', message: 'Check version', state: 'SUCCESS')
+                    echo 'Installing dependencies and building the project'
+                    sh '''
+                        ls -la
+                    '''
+                    setGitHubPullRequestStatus(context: 'Build', message: 'Build image', state: 'PENDING')
+                    echo 'npm run build image'
+                    sh '''
+                        docker build  --no-cache -t myApp_test:latest .
+                        docker image ls
+                    '''
+                    setGitHubPullRequestStatus(context: 'Build', message: 'Build image', state: 'SUCCESS')
+                } cache (e) {
+                    echo "Caught: ${err}"
+                    setGitHubPullRequestStatus(context: 'Build', message: 'build error', state: 'ERROR')
+                }
+
             }
         }
     }
     post {
         success {
             echo 'Build & Deployment Successful'
-            // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Success', state: 'SUCCESS')
+        // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Success', state: 'SUCCESS')
         }
         failure {
             echo 'Build or Deployment Failed'
-            // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE')
+        // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE')
         }
         always {
             cleanWs()
