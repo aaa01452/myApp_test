@@ -12,16 +12,15 @@ pipeline {
         GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')
     }
     stages {
-        stage('Set giuthub status') {
+        stage('Set github status') { // Corrected typo
             steps {
-                echo 'Set giuthub status'
+                echo 'Set github status'
             }
         }
         stage('Install Curl') {
             steps {
                 echo 'Install Curl'
                 script {
-                    // Update package list and install curl
                     sh '''
                         apk update && apk add curl
                     '''
@@ -39,8 +38,8 @@ pipeline {
                         docker version
                     '''
                         setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'SUCCESS')
-                    } catch (e) {
-                        echo "Caught: ${err}"
+                    } catch (e) { // Corrected to catch(e)
+                        echo "Caught: ${e}" // Corrected to use e
                         setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'ERROR')
                     }
                 }
@@ -55,9 +54,9 @@ pipeline {
             steps {
                 echo 'Ready to Clone'
                 git(
-                url: 'https://github.com/aaa01452/myApp_test',
-                branch: env.GITHUB_PR_SOURCE_BRANCH
-            )
+                    url: 'https://github.com/aaa01452/myApp_test',
+                    branch: env.GITHUB_PR_SOURCE_BRANCH
+                )
             }
         }
         stage('Build') {
@@ -82,22 +81,19 @@ pipeline {
                         docker image ls
                     '''
                     setGitHubPullRequestStatus(context: 'Build', message: 'Build image', state: 'SUCCESS')
-                } cache (e) {
-                    echo "Caught: ${err}"
+                } catch (e) { // Corrected to catch(e)
+                    echo "Caught: ${e}" // Corrected to use e
                     setGitHubPullRequestStatus(context: 'Build', message: 'build error', state: 'ERROR')
                 }
-
             }
         }
     }
     post {
         success {
             echo 'Build & Deployment Successful'
-        // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Success', state: 'SUCCESS')
         }
         failure {
             echo 'Build or Deployment Failed'
-        // setGitHubPullRequestStatus(context: 'Robot', message: 'Jenkins Failed', state: 'FAILURE')
         }
         always {
             cleanWs()
