@@ -59,13 +59,17 @@ pipeline {
                 }
             }
         }
-        stage('Image Build') {
-            agent {
-                docker {
-                    image 'docker'
-                    reuseNode true
+        stage('Install Docker') {
+            steps {
+                echo 'Install Docker'
+                script {
+                    sh '''
+                        apk add docker
+                    '''
                 }
             }
+        }
+        stage('Image Build') {
             steps {
                 script {
                     echo 'Image Build'
