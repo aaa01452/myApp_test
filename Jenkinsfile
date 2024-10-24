@@ -27,18 +27,19 @@ pipeline {
                 }
             }
         }
-        stage('Install Docker') {
-            steps {
-                echo 'Install Docker'
-                script {
-                    setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'PENDING')
-                    sh '''
-                        docker version
-                    '''
-                    setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'SUCCESS')
-                }
-            }
-        }
+        // stage('Install Docker') {
+        //     steps {
+        //         echo 'Install Docker'
+        //         script {
+        //             setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'PENDING')
+        //             sh '''
+        //                 apk add docker
+        //                 docker version
+        //             '''
+        //             setGitHubPullRequestStatus(context: 'Install Docker', message: 'Install Docker', state: 'SUCCESS')
+        //         }
+        //     }
+        // }
         stage('Checkout Code') {
             steps {
                 echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
