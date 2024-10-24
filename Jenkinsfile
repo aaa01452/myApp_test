@@ -1,10 +1,10 @@
 pipeline {
     agent {
-        dockerfile true
-        // docker {
-        //     image 'node:18-alpine'
-        //     reuseNode true
-        // }
+        docker {
+            image 'node:18-alpine'
+            image 'docker:20.10.7'
+            reuseNode true
+        }
     }
     triggers {
         githubPullRequests events: [Open(), commitChanged()], spec: '', triggerMode: 'HEAVY_HOOKS'
@@ -57,16 +57,6 @@ pipeline {
                     sh '''
                         ls -la
                     '''
-                }
-            }
-        }
-        stage('Build Nginx Docker Image') {
-            steps {
-                script {
-                    echo '拉取 Nginx 官方镜像并打标签'
-                    // 拉取 Nginx 官方镜像并打标签
-                    sh "docker pull nginx:latest"
-                    sh "docker tag nginx:latest ghcr.io/ethan-omniway/nginx:latest"
                 }
             }
         }
