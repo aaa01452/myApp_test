@@ -9,6 +9,9 @@ pipeline {
         githubPullRequests events: [Open(), commitChanged()], spec: '', triggerMode: 'HEAVY_HOOKS'
     }
     environment {
+        TARGET_BRANCH = "${env.GITHUB_PR_SOURCE_BRANCH}" ?: 'develop'
+    }
+    environment {
         GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')
     }
     stages {
@@ -30,7 +33,7 @@ pipeline {
         }
         stage('Checkout Code') {
             steps {
-                echo 'Pulling...' + env.GITHUB_PR_SOURCE_BRANCH
+                echo 'Pulling...' + env.TARGET_BRANCH
             }
         }
         stage('Clone Git Repository') {
@@ -38,7 +41,7 @@ pipeline {
                 echo 'Ready to Clone'
                 git(
                     url: 'https://github.com/aaa01452/myApp_test',
-                    branch: env.GITHUB_PR_SOURCE_BRANCH
+                    branch: env.TARGET_BRANCH 
                 )
             }
         }
