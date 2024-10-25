@@ -12,19 +12,20 @@ pipeline {
         GITHUB_TOKEN = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')
     }
     stages {
-        stage('Set github status') { // Corrected typo
-            steps {
-                echo 'Set github status'
-            }
-        }
-        stage('Install Curl') {
+        stage('Install Dependencies') {
             steps {
                 echo 'Install Curl'
-                script {
-                    sh '''
-                        apk update && apk add curl
-                    '''
-                }
+                sh '''
+                   apk update
+                   apk add --no-cache curl \
+                   bash \
+                   libc6-compat \
+                   device-mapper \
+                   make gcc g++ \
+                   openssl \
+                   iptables \
+                   util-linux
+                '''
             }
         }
         stage('Checkout Code') {
