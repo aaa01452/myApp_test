@@ -67,7 +67,7 @@ pipeline {
                     setGitHubPullRequestStatus(context: 'Image Build', message: 'Build image', state: 'PENDING')
                     echo 'npm run build image'
                     sh '''
-                        DOCKER_BUILDKIT=1 docker build  --no-cache -t myapp_test:ghcr.io/aaa01452/myapp_test .
+                        DOCKER_BUILDKIT=1 docker build --no-cache -t ghcr.io/aaa01452/myapp_test:latest .
                         docker image ls
                     '''
                     setGitHubPullRequestStatus(context: 'Image Build', message: 'Build image', state: 'SUCCESS')
