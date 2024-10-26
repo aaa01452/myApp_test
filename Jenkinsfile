@@ -20,6 +20,19 @@ pipeline {
                 echo 'step 2'
             }
         }
+        stage('Run Unit Test') {
+            when {
+                not {
+                    anyOf {
+                        branch 'main'
+                        branch 'develop'
+                    }
+                }
+            }
+            steps {
+                echo 'Run Unit Test'
+            }
+        }
         stage('Deliver for develop') {
             when {
                 branch 'develop'
