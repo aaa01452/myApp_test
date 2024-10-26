@@ -13,6 +13,7 @@ pipeline {
             steps {
                 echo 'step 1'
                 sh 'ls -la'
+                sh 'cat README.md'
             }
         }
         stage('Test') {
