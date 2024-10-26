@@ -4,6 +4,11 @@ pipeline {
         CI = 'true'
     }
     stages {
+        stage('print env') {
+            steps {
+                sh 'printenv'
+            }
+        }
         stage('Build') {
             steps {
                 echo 'step 1'
@@ -16,7 +21,7 @@ pipeline {
         }
         stage('Deliver for develop') {
             when {
-                branch 'develop' 
+                branch 'develop'
             }
             steps {
                 echo 'Deliver for develop'
@@ -24,7 +29,7 @@ pipeline {
         }
         stage('Deliver for main') {
             when {
-                branch 'main' 
+                branch 'main'
             }
             steps {
                 echo 'Deliver for main'
