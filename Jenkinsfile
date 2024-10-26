@@ -1,7 +1,7 @@
 pipeline {
     agent any
-    environment {
-        CI = 'true'
+    tools {
+        nodejs 'node 18.20.4'
     }
     stages {
         stage('print env') {
@@ -12,8 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'step 1'
-                sh 'ls -la'
-                sh 'cat README.md'
+                sh 'node -v'
             }
         }
         stage('Test') {
