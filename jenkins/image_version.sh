@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Get image version"
+
 response=$(curl -s -L \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer ${DOCKERHUB_CREDENTIALS}" \
