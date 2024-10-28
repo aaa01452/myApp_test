@@ -38,7 +38,10 @@ pipeline {
                 branch 'develop'
             }
             steps {
+                sh 'docker image ls'
                 echo 'Deliver for develop'
+                sh 'docker build -t myapp_test:latest .'
+                sh 'docker image ls'
             }
         }
         stage('Deliver for main') {
