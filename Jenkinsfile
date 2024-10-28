@@ -6,7 +6,8 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')
-        VERSION = "${env.BUILD_ID}-${env.GIT_COMMIT}"
+        // VERSION = "${env.BUILD_ID}-${env.GIT_COMMIT}"
+        VERSION = "0.1"
         NAME = "myapp_test"
         IMAGE = "${NAME}:${VERSION}"
         IMAGE_REPO = "ghcr.io/aaa01452"
@@ -55,7 +56,7 @@ pipeline {
                 sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:${VERSION}"
                 sh 'echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin'
                 sh "docker push ${IMAGE_REPO}/${NAME}:${VERSION}"
-                // sh "docker push ghcr.io/aaa01452/myapp_test:latest"
+                sh "docker rmi ${IMAGE_REPO}/${NAME}:${VERSION}"
             }
         }
         stage('Deliver for main') {
