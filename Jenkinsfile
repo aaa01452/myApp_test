@@ -23,6 +23,8 @@ pipeline {
             steps {
                 echo "Get First Tag"
                 script {
+                    sh 'ls -al'
+                    sh 'chmod +x image_version.sh'
                     // 執行外部 shell 腳本，捕捉輸出並將其設為 Jenkins 環境變數
                     def tag_value = sh(
                         script: './image_version.sh',
