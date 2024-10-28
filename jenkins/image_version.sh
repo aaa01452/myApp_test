@@ -11,6 +11,6 @@ response=$(curl -s -L \
 echo "check:  $response"
 
 # 使用 grep 和 sed 解析 JSON 並取得第一個 tag
-tag_value=$(echo "$response" | grep -o '"tags":\s*\[\s*"[^"]*' | sed 's/.*"//')
+tag_value=$(echo "$response" | sed -n 's/.*"tags":\s*\[\s*"\([^"]*\)".*/\1/p')
 
 echo "$tag_value"
