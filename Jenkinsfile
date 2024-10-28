@@ -19,6 +19,24 @@ pipeline {
                 sh 'printenv'
             }
         }
+        stage('Get First Tag') {
+            steps {
+                echo "Get First Tag"
+                script {
+                    // 執行外部 shell 腳本，捕捉輸出並將其設為 Jenkins 環境變數
+                    def tag_value = sh(
+                        script: './image_version.sh',
+                        returnStdout: true
+                    ).trim()
+
+                    // 設定 Jenkins 環境變數
+                    env.FIRST_TAG = tag_value
+
+                    // 印出結果 (可選)
+                    echo "The first tag is: ${env.FIRST_TAG}"
+                }
+            }
+        }
         stage('Build') {
             steps {
                 echo 'step 1'
@@ -48,7 +66,6 @@ pipeline {
                 branch 'develop'
             }
             steps {
-                
                 echo "Deliver for ${env.BRANCH_NAME}"
                 sh "docker build -t ${NAME} ."
                 sh 'docker image ls'
