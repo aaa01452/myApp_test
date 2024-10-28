@@ -3,6 +3,11 @@ pipeline {
     tools {
         nodejs 'node 18.20.4'
     }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('839fa9ee-f7d5-481e-8185-0f47d1566351')
+    }
+
     stages {
         stage('print env') {
             steps {
@@ -42,6 +47,9 @@ pipeline {
                 echo 'Deliver for develop'
                 sh 'docker build -t myapp_test:latest .'
                 sh 'docker image ls'
+                sh 'docker tag myapp_test:latest ghcr.io/aaa01452/myapp_test:latest'
+                sh 'echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin'
+                sh "docker push ghcr.io/aaa01452/myapp_test:latest"
             }
         }
         stage('Deliver for main') {
