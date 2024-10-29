@@ -23,10 +23,10 @@ pipeline {
             }
         }
 
-        stage('preparation') {
+        stage('Show docker image ls') {
             steps {
-                echo 'Build preparation'
-                checkout scm
+                echo 'Show docker image ls'
+                sh 'docker image ls'
             }
         }
         stage('Build') {
