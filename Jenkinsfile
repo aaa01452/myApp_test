@@ -53,30 +53,6 @@ pipeline {
                 echo 'Run Unit Test'
             }
         }
-        stage("Fetch Package Versions") {
-            steps {
-                script {
-                    // 使用 GitHub API 抓取指定 package 的版本列表
-                    def response = sh(
-                        script: """
-                        curl -s -H "Authorization: Bearer $DOCKERHUB_CREDENTIALS" \
-                        "https://api.github.com/users/$ORG_NAME/packages/container/$PACKAGE_NAME/versions"
-                        """,
-                        returnStdout: true
-                    ).trim()
-                    
-                    // 輸出 JSON 回應，便於除錯
-                    echo "GitHub API Response: ${response}"
-                    
-                    // 解析 JSON 結果
-                    def versions = readJSON text: response
-                    def versionParts = versions[0]?.metadata?.container?.tags[0].tokenize('.')
-                    def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
-                    echo "Latest version: ${latestVersion}"
-                }
-            }
-        }
-
 
         stage('Deliver for develop') {
             when {
@@ -104,7 +80,7 @@ pipeline {
                     def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
                     echo "Latest version: ${latestVersion}"
 
-                    echo 'Deliver for test'
+                    echo 'Deliver for develop'
                     
                     sh 'docker image ls'
                     sh "docker build -t ${NAME} ."
@@ -125,8 +101,4 @@ pipeline {
             }
         }
     }
-}
-
-String gitTagName() {
-
 }
