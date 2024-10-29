@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         nodejs 'node 18.20.4'
+        git 'git'
     }
 
     environment {
