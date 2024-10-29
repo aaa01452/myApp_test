@@ -60,7 +60,7 @@ pipeline {
                     def response = sh(
                         script: """
                         curl -s -H "Authorization: Bearer $DOCKERHUB_CREDENTIALS" \
-                        "https://api.github.com/orgs/$ORG_NAME/packages/container/$PACKAGE_NAME/versions"
+                        "https://api.github.com/users/$ORG_NAME/packages/container/$PACKAGE_NAME/versions"
                         """,
                         returnStdout: true
                     ).trim()
