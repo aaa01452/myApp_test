@@ -70,13 +70,9 @@ pipeline {
                     
                     // 解析 JSON 結果
                     def versions = readJSON text: response
-                    def latestVersion = versions[0]?.metadata?.container?.tags[0]
+                    def versionParts = versions[0]?.metadata?.container?.tags[0].tokenize('.')
+                    def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
                     echo "Latest version: ${latestVersion}"
-
-                    def versionParts = latestVersion.tokenize('.')
-                    def newVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
-                    echo "New version: ${newVersion}"
-
                 }
             }
         }
