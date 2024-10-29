@@ -12,6 +12,8 @@ pipeline {
         NAME = 'myapp_test'
         IMAGE_REPO = 'ghcr.io/aaa01452'
         result = '0.0.0'
+        PACKAGE_NAME = "myApp_test"
+        ORG_NAME = "aaa01452"
     }
 
     stages {
