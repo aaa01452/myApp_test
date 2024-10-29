@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 response=$(curl -s -L \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer ${DOCKERHUB_CREDENTIALS}" \
