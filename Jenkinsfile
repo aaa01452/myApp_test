@@ -53,6 +53,35 @@ pipeline {
                 echo 'Run Unit Test'
             }
         }
+        stage("Fetch Package Versions") {
+            steps {
+                script {
+                    // 使用 GitHub API 抓取指定 package 的版本列表
+                    def response = sh(
+                        script: """
+                        curl -s -H "Authorization: Bearer $DOCKERHUB_CREDENTIALS" \
+                        "https://api.github.com/orgs/$ORG_NAME/packages/container/$PACKAGE_NAME/versions"
+                        """,
+                        returnStdout: true
+                    ).trim()
+                    
+                    // 輸出 JSON 回應，便於除錯
+                    echo "GitHub API Response: ${response}"
+                    
+                    // 解析 JSON 結果
+                    def versions = readJSON text: response
+                    def latestVersion = versions[0]?.metadata?.container?.tags[0]
+                    echo "Latest version: ${latestVersion}"
+
+                    def versionParts = latestVersion.tokenize('.')
+                    def newVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
+                    echo "New version: ${newVersion}"
+
+                }
+            }
+        }
+
+
         stage('Deliver for develop') {
             when {
                 branch 'develop'
