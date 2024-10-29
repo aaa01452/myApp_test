@@ -34,7 +34,7 @@ pipeline {
                 script {
                     sh """
                         # 取得最新的 Git 標籤
-                        version=\$(git describe --tags \$(git rev-list --tags --max-count=1))
+                        version=\$(git describe --tags --always \$(git rev-list --tags --max-count=1))
 
                         # 解析版本號的 A, B, C
                         A="\$(echo \$version | cut -d '.' -f1)"
