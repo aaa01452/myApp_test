@@ -86,33 +86,32 @@ pipeline {
                 script {
                     echo 'Fetch Package Versions'
                     // 使用 GitHub API 抓取指定 package 的版本列表
+                    // 使用 GitHub API 抓取指定 package 的版本列表
                     def response = sh(
                         script: """
                         curl -s -H "Authorization: Bearer $DOCKERHUB_CREDENTIALS" \
-                        "https://api.github.com/orgs/$ORG_NAME/packages/container/$PACKAGE_NAME/versions"
+                        "https://api.github.com/users/$ORG_NAME/packages/container/$PACKAGE_NAME/versions"
                         """,
                         returnStdout: true
                     ).trim()
-
+                    
                     // 輸出 JSON 回應，便於除錯
                     echo "GitHub API Response: ${response}"
-
+                    
                     // 解析 JSON 結果
                     def versions = readJSON text: response
-                    def latestVersion = versions[0]?.metadata?.container?.tags[0]
+                    def versionParts = versions[0]?.metadata?.container?.tags[0].tokenize('.')
+                    def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
                     echo "Latest version: ${latestVersion}"
-                    def versionParts = latestVersion.tokenize('.')
-                    def newVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
-                    echo "New version: ${newVersion}"
 
                     echo 'Deliver for test'
                     
                     sh 'docker image ls'
                     sh "docker build -t ${NAME} ."
-                    sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:${newVersion}"
+                    sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh 'echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin'
-                    sh "docker push ${IMAGE_REPO}/${NAME}:${newVersion}"
-                    sh "docker rmi ${IMAGE_REPO}/${NAME}:${newVersion}"
+                    sh "docker push ${IMAGE_REPO}/${NAME}:${latestVersion}"
+                    sh "docker rmi ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh 'docker image ls'
                 }
             }
