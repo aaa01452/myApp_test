@@ -25,7 +25,11 @@ pipeline {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
                 echo 'Delete Images'
-                sh "docker rmi 582c1e95564b5aeff5006b8aa615178aeb1688b5"
+                sh "docker rmi ghcr.io/omnitw/letcrm-api:0.3"
+                sh "docker rmi ghcr.io/nginx/letcrm-api:0.2"
+                sh "docker rmi ghcr.io/omnitw/letcrm-api:0.2"
+                sh "docker rmi ghcr.io/omnitw/nginx:0.1"
+                sh "docker rmi ghcr.io/omnitw/letcrm-api:0.1"
                 echo 'Show docker image ls part 2'
                 sh 'docker image ls'
             }
