@@ -87,6 +87,7 @@ pipeline {
                     sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh "echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin"
                     sh "docker push ${IMAGE_REPO}/${NAME}:${latestVersion}"
+                    sh 'docker image ls'
                     sh "docker rmi ${IMAGE_REPO}/${NAME}"
                     sh 'docker image ls'
                 }
