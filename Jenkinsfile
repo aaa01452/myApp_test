@@ -73,7 +73,12 @@ pipeline {
                     
                     // 解析 JSON 結果
                     def versions = readJSON text: response
-                    def versionParts = versions[0]?.metadata?.container?.tags[1].tokenize('.')
+                    def versionParts
+                    if (versions[0]?.metadata?.container?.tags[0] == 'latest') {
+                        versionParts = versions[0]?.metadata?.container?.tags[1].tokenize('.')
+                    } else {
+                        versionParts = versions[0]?.metadata?.container?.tags[0].tokenize('.')
+                    }
                     def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
                     echo "Latest version: ${latestVersion}"
 
