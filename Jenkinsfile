@@ -24,6 +24,14 @@ pipeline {
             steps {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
+                echo 'Delete Images'
+                sh "docker rmi ${NAME}:0.12"
+                sh "docker rmi ${NAME}:0.11"
+                sh "docker rmi ${NAME}:latest"
+                sh "docker rmi ghcr.io/aaa01452/myapp_test:0.5"
+                sh "docker rmi 582c1e95564b5aeff5006b8aa615178aeb1688b5: latest"
+                echo 'Show docker image ls part 2'
+                sh 'docker image ls'
             }
         }
 
