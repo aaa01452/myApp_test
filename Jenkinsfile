@@ -11,7 +11,7 @@ pipeline {
         IMAGE_REPO = 'ghcr.io/aaa01452'
         PACKAGE_NAME = 'myApp_test'
         ORG_NAME = 'aaa01452'
-        TEAM_WEBHOOK_URL = 'https://omnidevops.webhook.office.com/webhookb2/350628d1-bb9d-4bde-94af-c7c598b7bfd6@05da7c17-94ef-4892-8009-7aa9c7304945/JenkinsCI/febecb7875be49e1b4b07e64e28b4ea5/082534a2-df08-4fee-8ed4-90cef0c9bd35/V2ij276zqlHRseGVlzsRd_oU3Bj3P5T7Q0Jnf0WJ9PjRc1'
+        TEAM_WEBHOOK_URL = 'https://omnidevops.webhook.office.com/webhookb2/350628d1-bb9d-4bde-94af-c7c598b7bfd6@05da7c17-94ef-4892-8009-7aa9c7304945/JenkinsCI/e273b0f3c0264af3a65227ae3e6ea8e4/082534a2-df08-4fee-8ed4-90cef0c9bd35/V2PRqHelsN6xmNKzbo0x9lBr14hMU-dQZnF2EIggY3jRw1'
     }
 
     options {
