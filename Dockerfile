@@ -24,6 +24,7 @@ WORKDIR /app
 COPY --from=build /app/dist /app/dist
 COPY --from=build /app/node_modules /app/node_modules
 COPY --from=build /app/package*.json /app/
+COPY --from=build /app/README.md /app/
 
 # Expose the application port
 EXPOSE 3000
