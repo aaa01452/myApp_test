@@ -9,8 +9,28 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')
         NAME = 'myapp_test'
         IMAGE_REPO = 'ghcr.io/aaa01452'
-        PACKAGE_NAME = "myApp_test"
-        ORG_NAME = "aaa01452"
+        PACKAGE_NAME = 'myApp_test'
+        ORG_NAME = 'aaa01452'
+    }
+
+    configure { project ->
+        project / 'properties' << 'jenkins.plugins.office365connector.WebhookJobProperty' {
+            webhooks {
+                'jenkins.plugins.office365connector.Webhook' {
+                    name('Office 365 Team channel notifications')
+                    url("https://omnidevops.webhook.office.com/webhookb2/350628d1-bb9d-4bde-94af-c7c598b7bfd6@05da7c17-94ef-4892-8009-7aa9c7304945/JenkinsCI/e273b0f3c0264af3a65227ae3e6ea8e4/082534a2-df08-4fee-8ed4-90cef0c9bd35/V2PRqHelsN6xmNKzbo0x9lBr14hMU-dQZnF2EIggY3jRw1")
+                    startNotification(false)
+                    notifySuccess(false)
+                    notifyAborted(false)
+                    notifyNotBuilt(false)
+                    notifyUnstable(false)
+                    notifyFailure(true)
+                    notifyBackToNormal(false)
+                    notifyRepeatedFailure(false)
+                    timeout(30000)
+                }
+            }
+        }
     }
 
     stages {
@@ -23,12 +43,6 @@ pipeline {
         stage('Show docker image ls') {
             steps {
                 echo 'Show docker image ls'
-                sh 'docker image ls'
-                echo 'Delete Images'
-                sh "docker rmi ghcr.io/ethan-omniway/nginx:0.1"
-                sh "docker rmi ghcr.io/ethan-omniway/nginx:latest"
-                sh "docker rmi ghcr.io/ethan-omniway/random-image:dfc23dfa-eb2b-465e-9499-4bb4b2716609"
-                echo 'Show docker image ls part 2'
                 sh 'docker image ls'
             }
         }
@@ -49,10 +63,10 @@ pipeline {
                         """,
                         returnStdout: true
                     ).trim()
-                    
+
                     // 輸出 JSON 回應，便於除錯
                     echo "GitHub API Response: ${response}"
-                    
+
                     // 解析 JSON 結果
                     def versions = readJSON text: response
                     def versionParts
@@ -74,10 +88,10 @@ pipeline {
                     sh "echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin"
                     sh "docker push ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh "docker push ${IMAGE_REPO}/${NAME}:latest"
-                    
+
                     echo 'List Docker Images'
                     sh 'docker image ls'
-                    
+
                     echo 'Clean Docker Images'
                     sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
                     sh "docker rmi ${IMAGE_REPO}/${NAME}:${latestVersion}"
@@ -93,6 +107,22 @@ pipeline {
             steps {
                 echo 'Deliver for main'
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+            echo 'Pipeline finished'
+        }
+        success {
+            echo 'Build & Deployment Successful'
+        }
+        failure {
+            echo 'Build or Deployment Failed'
+            office365ConnectorSend webhookUrl: 'https://prod.westeurope.logic.azure.com:443/workflows...',
+              message: 'Something went wrong',
+              status: 'Failure',
+              adaptiveCards: true
         }
     }
 }
