@@ -81,9 +81,10 @@ pipeline {
                     
                     sh 'docker image ls'
                     sh "docker build -t ${NAME}:latest ."
-                    sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:${latestVersion}"
+                    // sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:${latestVersion}"
+                    sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:latest"
                     sh "echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin"
-                    sh "docker push ${IMAGE_REPO}/${NAME}:${latestVersion}"
+                    // sh "docker push ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh "docker push ${IMAGE_REPO}/${NAME}:latest"
                     sh 'docker image ls'
                     sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
