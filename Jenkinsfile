@@ -35,7 +35,8 @@ pipeline {
                 sh 'docker image ls'
                 // some instructions here
                 office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
-                    message: 'Show docker image ls Success'
+                    adaptiveCards: true,
+                    message: 'Show jenkins team card'
             }
         }
 
