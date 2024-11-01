@@ -91,7 +91,6 @@ pipeline {
                     sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
                     sh "docker rmi ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh "docker rmi ${IMAGE_REPO}/${NAME}:latest"
-                    sh "docker rmi ${IMAGE_REPO}/${NAME}:0.6"
                     sh 'docker image ls'
                 }
             }
