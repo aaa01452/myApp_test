@@ -7,8 +7,6 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')
-        // VERSION = "${env.BUILD_ID}-${env.GIT_COMMIT}"
-        // VERSION = '0.1'
         NAME = 'myapp_test'
         IMAGE_REPO = 'ghcr.io/aaa01452'
         PACKAGE_NAME = "myApp_test"
@@ -74,10 +72,9 @@ pipeline {
                     echo "GitHub API Response: ${response}"
                     
                     // 解析 JSON 結果
-                    // def versions = readJSON text: response
-                    // def versionParts = versions[0]?.metadata?.container?.tags[0].tokenize('.')
-                    // def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
-                    def latestVersion = "0.1"
+                    def versions = readJSON text: response
+                    def versionParts = versions[0]?.metadata?.container?.tags[0].tokenize('.')
+                    def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
                     echo "Latest version: ${latestVersion}"
 
                     echo 'Deliver for develop'
@@ -89,6 +86,7 @@ pipeline {
                     sh "docker push ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh 'docker image ls'
                     sh "docker rmi ${IMAGE_REPO}/${NAME}"
+                    sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
                     sh 'docker image ls'
                 }
             }
