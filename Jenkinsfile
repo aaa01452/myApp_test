@@ -92,7 +92,11 @@ pipeline {
                     sh "echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin"
                     sh "docker push ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh "docker push ${IMAGE_REPO}/${NAME}:latest"
+                    
+                    echo 'List Docker Images'
                     sh 'docker image ls'
+                    
+                    echo 'Clean Docker Images'
                     sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
                     sh "docker rmi ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh "docker rmi ${IMAGE_REPO}/${NAME}:latest"
