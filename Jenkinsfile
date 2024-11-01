@@ -25,7 +25,6 @@ pipeline {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
                 echo 'Delete Images'
-                sh "docker rmi node:18-alpine"
                 sh "docker rmi ghcr.io/ethan-omniway/nginx:0.1"
                 sh "docker rmi ghcr.io/ethan-omniway/nginx:latest"
                 sh "docker rmi ghcr.io/ethan-omniway/random-image:dfc23dfa-eb2b-465e-9499-4bb4b2716609"
