@@ -74,7 +74,7 @@ pipeline {
                     // 解析 JSON 結果
                     def versions = readJSON text: response
                     def versionParts = versions[0]?.metadata?.container?.tags[0].tokenize('.')
-                    def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
+                    def latestVersion = "${versionParts[0]}.${versionParts[2].toInteger() + 1}"
                     echo "Latest version: ${latestVersion}"
 
                     echo 'Deliver for develop'
