@@ -11,7 +11,6 @@ pipeline {
         // VERSION = '0.1'
         NAME = 'myapp_test'
         IMAGE_REPO = 'ghcr.io/aaa01452'
-        result = '0.0.0'
         PACKAGE_NAME = "myApp_test"
         ORG_NAME = "aaa01452"
     }
@@ -75,9 +74,10 @@ pipeline {
                     echo "GitHub API Response: ${response}"
                     
                     // 解析 JSON 結果
-                    def versions = readJSON text: response
-                    def versionParts = versions[0]?.metadata?.container?.tags[0].tokenize('.')
-                    def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
+                    // def versions = readJSON text: response
+                    // def versionParts = versions[0]?.metadata?.container?.tags[0].tokenize('.')
+                    // def latestVersion = "${versionParts[0]}.${versionParts[1].toInteger() + 1}"
+                    def latestVersion = "0.1"
                     echo "Latest version: ${latestVersion}"
 
                     echo 'Deliver for develop'
