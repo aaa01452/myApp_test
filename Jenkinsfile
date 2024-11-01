@@ -23,10 +23,10 @@ pipeline {
             }
         }
 
-        stage('preparation') {
+        stage('Show docker image ls') {
             steps {
-                echo 'Build preparation'
-                checkout scm
+                echo 'Show docker image ls'
+                sh 'docker image ls'
             }
         }
         stage('Build') {
@@ -83,9 +83,9 @@ pipeline {
                     echo 'Deliver for develop'
                     
                     sh 'docker image ls'
-                    sh "docker build -t ${NAME} ."
+                    sh "docker build -t ${NAME}:latest ."
                     sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:${latestVersion}"
-                    sh 'echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin'
+                    sh "echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin"
                     sh "docker push ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh "docker rmi ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh 'docker image ls'
