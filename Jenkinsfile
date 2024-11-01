@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'node 18.20.4'
+        // nodejs 'node 18.20.4'
         git 'git'
     }
 
@@ -25,11 +25,11 @@ pipeline {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
                 echo 'Delete Images'
-                sh "docker rmi ghcr.io/omnitw/letcrm-api:0.3"
+                sh "docker rmi node:18-alpine"
                 sh "docker rmi ghcr.io/nginx/letcrm-api:0.2"
-                sh "docker rmi ghcr.io/omnitw/letcrm-api:0.2"
-                sh "docker rmi ghcr.io/omnitw/nginx:0.1"
-                sh "docker rmi ghcr.io/omnitw/letcrm-api:0.1"
+                sh "docker rmi ghcr.io/ethan-omniway/nginx:0.1"
+                sh "docker rmi ghcr.io/ethan-omniway/nginx:latest"
+                sh "docker rmi ghcr.io/ethan-omniway/random-image:dfc23dfa-eb2b-465e-9499-4bb4b2716609"
                 echo 'Show docker image ls part 2'
                 sh 'docker image ls'
             }
