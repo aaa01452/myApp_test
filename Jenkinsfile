@@ -11,13 +11,14 @@ pipeline {
         IMAGE_REPO = 'ghcr.io/aaa01452'
         PACKAGE_NAME = "myApp_test"
         ORG_NAME = "aaa01452"
+        TEAM_WEBHOOK_URL = 'https://omnidevops.webhook.office.com/webhookb2/350628d1-bb9d-4bde-94af-c7c598b7bfd6@05da7c17-94ef-4892-8009-7aa9c7304945/JenkinsCI/390ff664a46249f7a65acd370734a479/082534a2-df08-4fee-8ed4-90cef0c9bd35/V2qDFPbtKWJH6_CG0hPuUpTdtp5vystOGu1bH_8h59Mls1'
     }
 
     options {
         office365ConnectorWebhooks([[
             name: 'Office 365',
             startNotification: true,
-            url: 'https://omnidevops.webhook.office.com/webhookb2/350628d1-bb9d-4bde-94af-c7c598b7bfd6@05da7c17-94ef-4892-8009-7aa9c7304945/JenkinsCI/e273b0f3c0264af3a65227ae3e6ea8e4/082534a2-df08-4fee-8ed4-90cef0c9bd35/V2PRqHelsN6xmNKzbo0x9lBr14hMU-dQZnF2EIggY3jRw1'
+            url: env.TEAM_WEBHOOK_URL
         ]])
     }
 
@@ -32,6 +33,10 @@ pipeline {
             steps {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
+                // some instructions here
+                office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
+                    message: 'Show docker image ls Success',
+                    status: 'Success'
             }
         }
 
