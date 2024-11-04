@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        nodejs 'node 18.20.4'
+        // nodejs 'node 18.20.4'
         git 'git'
     }
 
@@ -9,8 +9,17 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('fe648b98-7b73-4e5a-85d1-2a71ad0487bb')
         NAME = 'myapp_test'
         IMAGE_REPO = 'ghcr.io/aaa01452'
-        PACKAGE_NAME = "myApp_test"
-        ORG_NAME = "aaa01452"
+        PACKAGE_NAME = 'myApp_test'
+        ORG_NAME = 'aaa01452'
+        TEAM_WEBHOOK_URL = "${env.LETCRM_TEAM_WEBHOOK_URL}"
+    }
+
+    options {
+        office365ConnectorWebhooks([[
+            name: 'Office 365',
+            startNotification: true,
+            url: env.TEAM_WEBHOOK_URL
+        ]])
     }
 
     stages {
@@ -24,30 +33,9 @@ pipeline {
             steps {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
-            }
-        }
-        stage('Build') {
-            steps {
-                echo 'step 1'
-                sh 'node -v'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'step 2'
-            }
-        }
-        stage('Run Unit Test') {
-            when {
-                not {
-                    anyOf {
-                        branch 'main'
-                        branch 'develop'
-                    }
-                }
-            }
-            steps {
-                echo 'Run Unit Test'
+                // some instructions here
+                office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
+                    message: 'Show jenkins team card'
             }
         }
 
@@ -57,6 +45,10 @@ pipeline {
             }
             steps {
                 script {
+                    echo 'Send notification to Teams'
+                    office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
+                    message: 'Ready to deploy',
+
                     echo 'Fetch Package Versions'
                     // 使用 GitHub API 抓取指定 package 的版本列表
                     // 使用 GitHub API 抓取指定 package 的版本列表
@@ -67,10 +59,10 @@ pipeline {
                         """,
                         returnStdout: true
                     ).trim()
-                    
+
                     // 輸出 JSON 回應，便於除錯
                     echo "GitHub API Response: ${response}"
-                    
+
                     // 解析 JSON 結果
                     def versions = readJSON text: response
                     def versionParts
@@ -92,10 +84,10 @@ pipeline {
                     sh "echo $DOCKERHUB_CREDENTIALS | docker login ghcr.io -u aaa01452 --password-stdin"
                     sh "docker push ${IMAGE_REPO}/${NAME}:${latestVersion}"
                     sh "docker push ${IMAGE_REPO}/${NAME}:latest"
-                    
+
                     echo 'List Docker Images'
                     sh 'docker image ls'
-                    
+
                     echo 'Clean Docker Images'
                     sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
                     sh "docker rmi ${IMAGE_REPO}/${NAME}:${latestVersion}"
@@ -111,6 +103,24 @@ pipeline {
             steps {
                 echo 'Deliver for main'
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
+            echo 'Pipeline finished'
+        }
+        success {
+            echo 'Build & Deployment Successful'
+            office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
+              message: 'Build & Deployment Successful',
+              status: 'Success'
+        }
+        failure {
+            echo 'Build or Deployment Failed'
+            office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
+              message: 'Something went wrong',
+              status: 'Failure'
         }
     }
 }
