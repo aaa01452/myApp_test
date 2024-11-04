@@ -36,8 +36,8 @@ pipeline {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
                 // some instructions here
-                // office365ConnectorSend webhookUrl: $TEAM_WEBHOOK_URL,
-                //     message: 'Show jenkins team card'
+                office365ConnectorSend webhookUrl: $TEAM_WEBHOOK_URL,
+                    message: 'Show jenkins team card'
             }
         }
 
