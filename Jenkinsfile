@@ -36,7 +36,6 @@ pipeline {
                 sh 'docker image ls'
                 // some instructions here
                 office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
-                    adaptiveCards: true,
                     message: 'Show jenkins team card'
             }
         }
@@ -116,15 +115,13 @@ pipeline {
             echo 'Build & Deployment Successful'
             office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
               message: 'Build & Deployment Successful',
-              status: 'Success',
-              adaptiveCards: true
+              status: 'Success'
         }
         failure {
             echo 'Build or Deployment Failed'
             office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
               message: 'Something went wrong',
-              status: 'Failure',
-              adaptiveCards: true
+              status: 'Failure'
         }
     }
 }
