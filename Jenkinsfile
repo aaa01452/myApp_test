@@ -12,14 +12,14 @@ pipeline {
         PACKAGE_NAME = 'myApp_test'
         ORG_NAME = 'aaa01452'
         // TEAM_WEBHOOK_URL = 'https://prod-18.southeastasia.logic.azure.com:443/workflows/3e5e0c2423ba4cfbb34af65cbedbf872/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=iBJrP1HXc-F2NW27BmqvgsUJS-nkOKMrOlRszExFEjk'
-        // TEAM_WEBHOOK_URL = LETCRM_TEAM_WEBHOOK_URL
+        TEAM_WEBHOOK_URL = credentials('LETCRM_TEAM_WEBHOOK_URL')
     }
 
     options {
         office365ConnectorWebhooks([[
             name: 'Office 365',
             startNotification: true,
-            url: env.LETCRM_TEAM_WEBHOOK_URL
+            url: TEAM_WEBHOOK_URL
         ]])
     }
 
@@ -35,7 +35,7 @@ pipeline {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
                 // some instructions here
-                office365ConnectorSend webhookUrl: env.LETCRM_TEAM_WEBHOOK_URL,
+                office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
                     message: 'Show jenkins team card'
             }
         }
@@ -47,7 +47,7 @@ pipeline {
             steps {
                 script {
                     echo 'Send notification to Teams'
-                    office365ConnectorSend webhookUrl: env.LETCRM_TEAM_WEBHOOK_URL,
+                    office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
                     message: 'Ready to deploy',
 
                     echo 'Fetch Package Versions'
@@ -113,13 +113,13 @@ pipeline {
         }
         success {
             echo 'Build & Deployment Successful'
-            office365ConnectorSend webhookUrl: env.LETCRM_TEAM_WEBHOOK_URL,
+            office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
               message: 'Build & Deployment Successful',
               status: 'Success'
         }
         failure {
             echo 'Build or Deployment Failed'
-            office365ConnectorSend webhookUrl: env.LETCRM_TEAM_WEBHOOK_URL,
+            office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
               message: 'Something went wrong',
               status: 'Failure'
         }
