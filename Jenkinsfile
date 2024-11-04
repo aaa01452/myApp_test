@@ -15,17 +15,18 @@ pipeline {
         TEAM_WEBHOOK_URL = credentials('2cffeca5-e485-4e03-a8dd-f0cc8954bf4e')
     }
 
-    options {
-        office365ConnectorWebhooks([[
-            name: 'Office 365',
-            startNotification: true,
-            url: TEAM_WEBHOOK_URL
-        ]])
-    }
+    // options {
+    //     office365ConnectorWebhooks([[
+    //         name: 'Office 365',
+    //         startNotification: true,
+    //         url: TEAM_WEBHOOK_URL
+    //     ]])
+    // }
 
     stages {
         stage('print env') {
             steps {
+                echo "The second webhook URL is: ${TEAM_WEBHOOK_URL}"
                 sh 'printenv'
             }
         }
@@ -35,8 +36,8 @@ pipeline {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
                 // some instructions here
-                office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
-                    message: 'Show jenkins team card'
+                // office365ConnectorSend webhookUrl: $TEAM_WEBHOOK_URL,
+                //     message: 'Show jenkins team card'
             }
         }
 
@@ -113,15 +114,15 @@ pipeline {
         }
         success {
             echo 'Build & Deployment Successful'
-            office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
-              message: 'Build & Deployment Successful',
-              status: 'Success'
+            // office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
+            //   message: 'Build & Deployment Successful',
+            //   status: 'Success'
         }
         failure {
             echo 'Build or Deployment Failed'
-            office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
-              message: 'Something went wrong',
-              status: 'Failure'
+            // office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
+            //   message: 'Something went wrong',
+            //   status: 'Failure'
         }
     }
 }
