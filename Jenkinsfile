@@ -11,23 +11,20 @@ pipeline {
         IMAGE_REPO = 'ghcr.io/aaa01452'
         PACKAGE_NAME = 'myApp_test'
         ORG_NAME = 'aaa01452'
-        // TEAM_WEBHOOK_URL = 'https://prod-18.southeastasia.logic.azure.com:443/workflows/3e5e0c2423ba4cfbb34af65cbedbf872/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=iBJrP1HXc-F2NW27BmqvgsUJS-nkOKMrOlRszExFEjk'
-        // TEAM_WEBHOOK_URL = credentials('2cffeca5-e485-4e03-a8dd-f0cc8954bf4e')
         TEAM_WEBHOOK_URL = "${env.LETCRM_TEAM_WEBHOOK_URL}"
     }
 
-    // options {
-    //     office365ConnectorWebhooks([[
-    //         name: 'Office 365',
-    //         startNotification: true,
-    //         url: TEAM_WEBHOOK_URL
-    //     ]])
-    // }
+    options {
+        office365ConnectorWebhooks([[
+            name: 'Office 365',
+            startNotification: true,
+            url: env.TEAM_WEBHOOK_URL
+        ]])
+    }
 
     stages {
         stage('print env') {
             steps {
-                sh "curl -X POST -H 'Content-Type: application/json' -d '{\"text\": \"Hello, Jenkins!\"}' $TEAM_WEBHOOK_URL"
                 sh 'printenv'
             }
         }
@@ -37,7 +34,7 @@ pipeline {
                 echo 'Show docker image ls'
                 sh 'docker image ls'
                 // some instructions here
-                office365ConnectorSend webhookUrl: $TEAM_WEBHOOK_URL,
+                office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
                     message: 'Show jenkins team card'
             }
         }
@@ -115,15 +112,15 @@ pipeline {
         }
         success {
             echo 'Build & Deployment Successful'
-            // office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
-            //   message: 'Build & Deployment Successful',
-            //   status: 'Success'
+            office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
+              message: 'Build & Deployment Successful',
+              status: 'Success'
         }
         failure {
             echo 'Build or Deployment Failed'
-            // office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
-            //   message: 'Something went wrong',
-            //   status: 'Failure'
+            office365ConnectorSend webhookUrl: env.TEAM_WEBHOOK_URL,
+              message: 'Something went wrong',
+              status: 'Failure'
         }
     }
 }
