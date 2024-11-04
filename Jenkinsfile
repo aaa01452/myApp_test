@@ -26,7 +26,7 @@ pipeline {
     stages {
         stage('print env') {
             steps {
-                echo "The second webhook URL is: ${TEAM_WEBHOOK_URL}"
+                sh "curl -X POST -H 'Content-Type: application/json' -d '{\"text\": \"Hello, Jenkins!\"}' $TEAM_WEBHOOK_URL"
                 sh 'printenv'
             }
         }
